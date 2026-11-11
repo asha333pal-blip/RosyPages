@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Diary | RosyPages</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="diary-bg">
+
+    <%- include("partials/navbar") %>
+
+    <div class="dbook-wrap">
+        <div class="dbook">
+
+            <div class="dbook-spine"></div>
+
+            <div class="dbook-cover">
+
+                <!-- Doodles -->
+                <svg class="dbook-doodles" viewBox="0 0 440 600" aria-hidden="true">
+                    <defs>
+                        <g id="spark">
+                            <path d="M0-12L3-3 12 0 3 3 0 12-3 3-12 0-3-3Z"></path>
+                        </g>
+                        <g id="heart">
+                            <path d="M0 9C-15-2-12-15-4-15-1-15 0-12 0-10 0-12 1-15 4-15 12-15 15-2 0 9Z"></path>
+                        </g>
+                        <g id="flower">
+                            <circle cx="0" cy="-9" r="6"></circle>
+                            <circle cx="0" cy="-9" r="6" transform="rotate(72)"></circle>
+                            <circle cx="0" cy="-9" r="6" transform="rotate(144)"></circle>
+                            <circle cx="0" cy="-9" r="6" transform="rotate(216)"></circle>
+                            <circle cx="0" cy="-9" r="6" transform="rotate(288)"></circle>
+                            <circle cx="0" cy="0" r="4.5" fill="#fde68a"></circle>
+                        </g>
+                        <g id="bow">
+                            <path d="M0 0L-24-13V13Z"></path>
+                            <path d="M0 0L24-13V13Z"></path>
+                            <circle cx="0" cy="0" r="5.5" fill="#be185d"></circle>
+                        </g>
+                    </defs>
+
+                    <!-- Upar -->
+                    <use href="#spark" fill="#fff7fb" transform="translate(70 72) scale(1.5)"></use>
+                    <use href="#spark" fill="#fff7fb" transform="translate(318 46) scale(0.9)"></use>
+                    <use href="#flower" fill="#fff7fb" transform="translate(190 56) scale(1.15)"></use>
+                    <use href="#heart" fill="none" stroke="#fff7fb" stroke-width="2" transform="translate(335 100) rotate(14) scale(1.3)"></use>
+                    <use href="#heart" fill="#fff7fb" transform="translate(48 148) rotate(-12) scale(0.8)"></use>
+                    <use href="#heart" fill="#fff7fb" transform="translate(262 128) scale(0.6)"></use>
+                    <path d="M92 112C118 88 150 132 178 104S226 96 244 110" fill="none"
+                          stroke="#fff7fb" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 8"></path>
+
+                    <!-- Neeche -->
+                    <use href="#flower" fill="#fff7fb" transform="translate(70 498) scale(1.35)"></use>
+                    <use href="#flower" fill="#fff7fb" transform="translate(126 536) scale(0.8)"></use>
+                    <use href="#bow" fill="#fff7fb" transform="translate(332 500) rotate(-8) scale(1.25)"></use>
+                    <use href="#spark" fill="#fff7fb" transform="translate(246 478) scale(0.85)"></use>
+                    <use href="#spark" fill="#fff7fb" transform="translate(366 446) scale(0.6)"></use>
+                    <use href="#heart" fill="#fff7fb" transform="translate(150 562) scale(0.55)"></use>
+                    <use href="#heart" fill="#fff7fb" transform="translate(282 562) scale(0.55)"></use>
+                    <text x="216" y="570" text-anchor="middle" fill="#fff7fb"
+                          style="font-family:'Dancing Script',cursive;font-size:28px;font-weight:700;">dear diary</text>
+                </svg>
+
+                <!-- Elastic band -->
+                <div class="dbook-band"></div>
+
+                <!-- Sticker label -->
+                <div class="dbook-label">
+                    <h2><%= journal.name %></h2>
+                    <p class="dl-sub">your little pink corner ✨</p>
+
+                    <div class="dl-actions">
+                        <a href="/diaries/<%= journal._id %>/new" class="dl-btn">✏️ New Entry</a>
+                        <a href="/diaries/<%= journal._id %>/entries" class="dl-btn">📖 All Entries (<%= count %>)</a>
+                    </div>
+                </div>
+
+                <!-- Bookmark ribbon -->
+                <div class="dbook-bookmark"></div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

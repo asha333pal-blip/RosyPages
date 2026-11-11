@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= selected ? selected.title : "My Pages" %> | RosyPages</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="diary-bg">
+
+    <%- include("partials/navbar") %>
+
+    <%
+        const jid = journal._id;
+        const qs = q ? "?q=" + encodeURIComponent(q) : "";
+    %>
+
+    <div class="app-layout">
+
+        <!-- Left sidebar -->
+        <aside class="side">
+            <a href="/diaries" class="side-title"><%= journal.name %> 🎀</a>
+
+         <form class="side-search" method="GET" action="/diaries/<%= jid %>/entries">
+    <svg class="ss-icon" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-3.5-3.5"></path>
+    </svg>
+
+    <input type="text" name="q" value="<%= q %>" placeholder="Search pages..."
+           maxlength="100" autocomplete="off">
+
+    <button type="submit" class="ss-go" title="Search" aria-label="Search">
+        <svg viewBox="0 0 24 24">
+            <path d="M5 12h14"></path>
+            <path d="M13 6l6 6-6 6"></path>
+        </svg>
+    </button>
+</form>
+
+            <a class="side-new" href="/diaries/<%= jid %>/new">+ New Entry</a>
+
+            <% if (q) { %>
+                <a class="side-clear" href="/diaries/<%= jid %>/entries">✕ Clear search</a>
+            <% } %>
+
+            <div class="side-count"><%= entries.length %> <%= q ? "results" : "pages" %></div>
+
+            <nav class="side-list">
+                <% entries.forEach((e) => { %>
+                    <a class="side-item <%= selected && String(selected._id) === String(e._id) ? 'active' : '' %>"
+                       href="/diaries/<%= jid %>/entries/<%= e._id %><%= qs %>">
+                        <span class="si-title"><%= e.title %></span>
+                        <span class="si-date"><%= e.created_at.toDateString() %></span>
+                    </a>
+                <% }) %>
+            </nav>
+        </aside>
+
+        <!-- Right: selected entry -->
+        <main class="reader">
+            <% if (selected) { %>
+                <%
+                    const base = "/diaries/" + jid + "/entries/" + selected._id;
+                %>
+
+                <div class="reader-bar">
+                    <div class="reader-meta">
+                        <span>📅 <%= selected.created_at.toDateString() %></span>
+                        <span class="word-count"><%= words %> <%= words === 1 ? "word" : "words" %></span>
+                    </div>
+
+                    <div class="reader-actions">
+                        <a href="<%= base %>/edit" class="p-btn">✏️ Edit</a>
+
+                        <button class="menu-btn" type="button" id="menuBtn" title="More options">⋯</button>
+                        <div class="menu-list" id="menuList">
+                            <button class="menu-item" type="button" id="printBtn">🖨 Print</button>
+                            <a class="menu-item" href="<%= base %>/export?format=txt">⬇ Export as text (.txt)</a>
+                            <a class="menu-item" href="<%= base %>/export?format=html">⬇ Export as web page (.html)</a>
+                            <div class="menu-sep"></div>
+                            <button class="menu-item danger" type="button" id="deleteBtn">🗑 Delete entry</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="reader-title"><%= selected.title %></h1>
+                <div class="reader-body paper-text"><%- selected.content %></div>
+
+                <form id="deleteForm" method="POST" action="<%= base %>?_method=DELETE"></form>
+
+            <% } else { %>
+                <div class="reader-empty">
+                    <% if (q) { %>
+                        <p>No pages found for "<%= q %>" 🌷</p>
+                        <a href="/diaries/<%= jid %>/entries" class="p-btn">Clear search</a>
+                    <% } else { %>
+                        <p>No pages yet 🌸</p>
+                        <p>Tap "New Entry" to write your first page!</p>
+                    <% } %>
+                </div>
+            <% } %>
+        </main>
+
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById("menuBtn");
+        const menuList = document.getElementById("menuList");
+
+        if (menuBtn) {
+            function closeMenu() {
+                menuList.classList.remove("open");
+                menuBtn.classList.remove("active");
+            }
+
+            menuBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                menuList.classList.toggle("open");
+                menuBtn.classList.toggle("active");
+            });
+            document.addEventListener("click", closeMenu);
+            document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+
+            document.getElementById("printBtn").addEventListener("click", () => {
+                closeMenu();
+                window.print();
+            });
+
+            document.getElementById("deleteBtn").addEventListener("click", () => {
+                closeMenu();
+                if (confirm("Are you sure you want to delete this entry?")) {
+                    document.getElementById("deleteForm").submit();
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

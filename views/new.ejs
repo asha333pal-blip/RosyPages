@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>New Entry | RosyPages</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Quill Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+</head>
+
+<body class="write-bg">
+
+    <%- include("partials/navbar") %>
+
+    <form class="write-paper" id="entryForm"
+          method="POST"
+          action="/diaries/<%= journal._id %>/entries">
+
+        <!-- Title and Save -->
+        <div class="write-top">
+
+            <input class="write-title"
+                   type="text"
+                   name="title"
+                   placeholder="Entry Title"
+                   required
+                   maxlength="100">
+
+            <div class="write-actions">
+
+                <button type="submit" class="save-now">
+                    Save now 💾
+                </button>
+
+                <button type="button"
+                        class="format-toggle"
+                        id="formatToggle"
+                        aria-expanded="false"
+                        title="Text formatting">
+
+                    <span>A</span>
+                </button>
+
+            </div>
+        </div>
+
+        <!-- Formatting Toolbar -->
+        <div id="editorToolbar" class="editor-toolbar">
+
+            <span class="ql-formats">
+                <select class="ql-header">
+                    <option value="1">Heading 1</option>
+                    <option value="2">Heading 2</option>
+                    <option value="3">Heading 3</option>
+                    <option selected>Normal</option>
+                </select>
+
+                <select class="ql-size">
+                    <option value="small">Small</option>
+                    <option selected>Normal</option>
+                    <option value="large">Large</option>
+                    <option value="huge">Huge</option>
+                </select>
+            </span>
+
+            <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+            </span>
+
+            <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+            </span>
+
+            <span class="ql-formats">
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+            </span>
+
+            <span class="ql-formats">
+                <button class="ql-align" value=""></button>
+                <button class="ql-align" value="center"></button>
+                <button class="ql-align" value="right"></button>
+            </span>
+
+            <span class="ql-formats">
+                <button class="ql-clean"></button>
+            </span>
+
+        </div>
+
+        <!-- Date and word count -->
+        <div class="write-meta">
+
+            <div class="meta-left">
+                <label class="date-box">
+                    📅 <input type="date" name="created_at" id="entryDate" required>
+                </label>
+                <span class="word-count" id="wordCount">0 words</span>
+            </div>
+
+            <a href="/diaries/<%= journal._id %>/entries" class="back-link">
+                ← Back to my pages
+            </a>
+
+        </div>
+
+        <!-- Rich Text Editor -->
+        <div id="editor">
+            <p><br></p>
+        </div>
+
+        <!-- Actual content sent to backend -->
+        <input type="hidden" name="content" id="entryContent">
+
+    </form>
+
+    <!-- Quill JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+
+    <script>
+
+        // Set today's date
+        document.getElementById("entryDate").value =
+            new Date().toLocaleDateString("en-CA");
+
+        // Initialize Quill Editor
+        const quill = new Quill("#editor", {
+            theme: "snow",
+            placeholder: "Dear diary... 🌸",
+
+            modules: {
+                toolbar: "#editorToolbar"
+            }
+        });
+
+        // Live word count
+        const wordCount = document.getElementById("wordCount");
+        function countWords() {
+            const text = quill.getText().trim();
+            const n = text ? text.split(/\s+/).length : 0;
+            wordCount.textContent = n + (n === 1 ? " word" : " words");
+        }
+        quill.on("text-change", countWords);
+        countWords();
+
+        // Expand / Collapse Formatting Toolbar
+        const formatToggle = document.getElementById("formatToggle");
+        const toolbar = document.getElementById("editorToolbar");
+
+        formatToggle.addEventListener("click", function () {
+
+            const isOpen = toolbar.classList.toggle("show");
+
+            formatToggle.classList.toggle("active", isOpen);
+
+            formatToggle.setAttribute("aria-expanded", isOpen);
+
+        });
+
+        // Submit content to backend
+        document.getElementById("entryForm").addEventListener("submit", function (event) {
+
+            const content = quill.getText().trim();
+
+            if (!content) {
+                event.preventDefault();
+                alert("Please write something in your diary! 🌸");
+                return;
+            }
+
+            document.getElementById("entryContent").value =
+                quill.root.innerHTML;
+
+        });
+
+    </script>
+
+</body>
+</html>

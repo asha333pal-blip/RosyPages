@@ -1,0 +1,38 @@
+<nav class="navbar">
+    <a href="/" class="logo">RosyPages 🌸</a>
+   <div class="nav-links">
+    <a href="/" class="nav-icon" title="Home" aria-label="Home">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path>
+        </svg>
+    </a>
+    <a href="/diaries" class="nav-icon" title="My Diary" aria-label="My Diary">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+    </a>
+</div>
+   <div class="nav-auth">
+    <% if (currentUser) { %>
+        <span style="color:white;">Hi, <%= currentUser.name %> 🌸</span>
+        <a href="/logout" class="signup-btn">Logout</a>
+    <% } else { %>
+        <a href="/signin" class="signin-link">Sign In</a>
+        <a href="/signup" class="signup-btn">Sign Up →</a>
+    <% } %>
+</div>
+</nav>
+<% if (success && success.length) { %>
+    <div class="flash success"><%= success[0] %></div>
+<% } %>
+<% if (error && error.length) { %>
+    <div class="flash error"><%= error[0] %></div>
+<% } %>
+
+<script>
+    document.querySelectorAll(".flash").forEach((el) => {
+        setTimeout(() => { el.style.opacity = "0"; }, 4000);
+        setTimeout(() => { el.remove(); }, 4600);
+    });
+</script>
